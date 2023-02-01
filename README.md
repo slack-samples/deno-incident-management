@@ -1,7 +1,8 @@
-# Incident Management App ⚠️
+# Incident Management App
 
-This app demonstrates the use of workflows to optimize the process of incident
-management within Slack, featuring external tools like Jira, Zoom, and Box.
+This sample demonstrates the use of workflows to optimize the process of
+incident management within Slack, featuring the use of external tools like Jira
+and Zoom.
 
 **Guide Outline**:
 
@@ -9,7 +10,7 @@ management within Slack, featuring external tools like Jira, Zoom, and Box.
 - [Setup](#setup)
   - [Install the Slack CLI](#install-the-slack-cli)
   - [Clone the Sample App](#clone-the-sample-app)
-  - [Prepare your Google Services](#prepare-your-google-services)
+  - [Atlassian & Zoom Access Tokens](#atlassian-and-zoom-access-tokens)
 - [Create a Link Trigger](#create-a-link-trigger)
 - [Running Your Project Locally](#running-your-project-locally)
 - [Deploying Your App](#deploying-your-app)
@@ -51,15 +52,16 @@ $ slack create my-app -t slack-samples/deno-incident-management
 $ cd my-app
 ```
 
-### Atlassian & Zoom Access Tokens
+### Atlassian and Zoom Access Tokens
 
-Access tokens are required when calling the Atlassian and Zoom APIs.
-
-Tokens can be created in
-[your developer settings on GitHub](https://github.com/settings/tokens).
+To run this application, access tokens are required in order to make calls to
+the Atlassian and Zoom APIs.
 
 `ZOOM_JWT_TOKEN` can be attained from the
-[Zoom Developer Site](https://developers.zoom.us/).
+[Zoom Developer Site](https://developers.zoom.us/) and many of the Atlassian
+environment variables can be acquired by signing up for a free
+[Cloud Developer Bundle](https://www.atlassian.com/try/cloud/signup?product=confluence.ondemand,jira-software.ondemand,jira-servicedesk.ondemand,jira-core.ondemand&developer=true)
+with Atlassian.
 
 > Your personal access token allows your application to perform the API calls
 > used by functions as though it was _from your Atlassian and Zoom accounts_.
@@ -70,8 +72,6 @@ Tokens can be created in
 
 Storing your access token as an environment variable allows you to use different
 tokens across local and deployed versions of the same app.
-
-##### Environment variables used
 
 - `INCIDENT_CHANNEL` is the channel ID of the designated, public incident
   channel. This is where the app will post updates about a given incident.
@@ -85,14 +85,9 @@ tokens across local and deployed versions of the same app.
 
 - `ATLASSIAN_API_KEY` is used to make calls to the Atlassian API.
 
-- `ATLASSIAN_SPACE` is the Jira project `Key` used to add and edit issues.
+- `ATLASSIAN_SPACE` is used to create an RCA Confluence page.
 
 - `JIRA_PROJECT` is the Jira project `Key` used to add and edit issues.
-
-_Note: to gain access to many of the above environment variables, we recommend
-signing up for a free
-[Cloud Developer Bundle](https://www.atlassian.com/try/cloud/signup?product=confluence.ondemand,jira-software.ondemand,jira-servicedesk.ondemand,jira-core.ondemand&developer=true)
-with Atlassian._
 
 ##### Development environment variables
 
