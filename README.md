@@ -1,6 +1,6 @@
 # Incident Management App
 
-This sample demonstrates the use of workflows to optimize the process of
+This sample uses workflows to automate and simplify the process of
 incident management within Slack, featuring the use of external tools like Jira
 and Zoom.
 
@@ -119,7 +119,7 @@ Hosted custom functions must declare which
 [outgoing domains](https://api.slack.com/future/manifest) are used when making
 network requests, including Atlassian and Zoom calls. `api.zoom.com` is already
 configured as an outgoing domain in this sample's manifest, but you'll also need
-to provide your Atlassian subdomain (`your-subdomain.atlassian.net`).
+to provide your Atlassian subdomain (`<your-subdomain>.atlassian.net`).
 
 ## Create a Link Trigger
 
