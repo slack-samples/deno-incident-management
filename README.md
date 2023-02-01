@@ -13,6 +13,7 @@ and Zoom.
   - [Atlassian & Zoom Access Tokens](#atlassian-and-zoom-access-tokens)
 - [Create a Link Trigger](#create-a-link-trigger)
 - [Running Your Project Locally](#running-your-project-locally)
+- [Datastores](#datastores)
 - [Deploying Your App](#deploying-your-app)
   - [Viewing Activity Logs](#viewing-activity-logs)
 - [Project Structure](#project-structure)
@@ -168,7 +169,7 @@ Connected, awaiting events
 
 Once running, click the
 [previously created Shortcut URL](#create-a-link-trigger) associated with the
-`(dev)` version of your app to configure the channel list for reaction events.
+`(dev)` version of your app to run the associated workflow.
 
 To stop running locally, press `<CTRL> + C` to end the process.
 
@@ -188,6 +189,13 @@ invoked, the workflow should run just as it did in when developing locally.
 ```
 $ slack trigger create --trigger-def triggers/create_incident.ts
 ```
+
+## Datastores
+
+When your app needs to store any data, datastores are the right place for that.
+For an example of a datastore, see `datastores/incident.ts`. Using a datastore
+also requires the `datastore:write`/`datastore:read` scopes to be present in
+your manifest.
 
 ### Viewing Activity Logs
 

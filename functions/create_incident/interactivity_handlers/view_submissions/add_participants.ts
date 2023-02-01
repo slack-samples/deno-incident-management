@@ -40,7 +40,7 @@ export const addParticipantsSubmission: ViewSubmissionHandler<
 
   saveIncident(client, incident);
 
-  // TODO :: fix this, too tired
+  // TODO :: Refactor (inherited)
   let participantList = "";
 
   for (let i = 0; i < incidentParticipants.length; i++) {
