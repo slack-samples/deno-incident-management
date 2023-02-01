@@ -1,301 +1,254 @@
-# Incident-Management-Functions ⚠️
+# Incident Management App ⚠️
 
-The incident management functions are a set of functions used to optimize the process of incident management within Slack. This project utilizes 
-Jira, Zoom, Box, and other partners to save incident data. It utilizes the beta [Slack CLI](https://api.slack.com/future/tools/cli) to create functions.
+This app demonstrates the use of workflows to optimize the process of incident
+management within Slack, featuring external tools like Jira, Zoom, and Box.
 
-## Demo Videos
+**Guide Outline**:
 
-### App 1 Minute Summary
-https://user-images.githubusercontent.com/10428517/200922003-058f6678-f672-406f-8465-d0e283774cf8.mp4
+- [Supported Workflows](#supported-workflows)
+- [Setup](#setup)
+  - [Install the Slack CLI](#install-the-slack-cli)
+  - [Clone the Sample App](#clone-the-sample-app)
+  - [Prepare your Google Services](#prepare-your-google-services)
+- [Create a Link Trigger](#create-a-link-trigger)
+- [Running Your Project Locally](#running-your-project-locally)
+- [Deploying Your App](#deploying-your-app)
+  - [Viewing Activity Logs](#viewing-activity-logs)
+- [Project Structure](#project-structure)
+- [Resources](#resources)
 
-### App Full Feature Demo (3 Minutes)
-https://user-images.githubusercontent.com/10428517/201747087-8705f4fe-b7a2-42d4-9e87-da6e5a8d07ac.mp4
+---
 
-## Known Issues & Disclaimer
-> 🚨 When running in dev mode (`slack run`) the app will get timeout errors and may retry adding incidents which didn't succeed because of the timeout. This may cause duplicate incidents and erratic behavior. We are working to fix this as soon as we can. This is not a problem if you run `slack deploy`. 🚨
+## Supported Workflows
 
-This project is built using pre-released features on the Slack Platform. It may contain bugs, performance issues, and isn't representative of the final product. The code in this project isn't meant to be a standard template. It may change or become legacy as updates are released to the Slack Beta Platform.
+- **Create incident**: Submit an incident by providing details, determining a
+  severity, and optionally assiging a DRI.
+- **Create incident report**: Generate a report that gives statistics of all
+  incidents within a designated incident channel.
 
-# Steps 
-1. [Clone the repo](#step-1-clone-the-repo)
-2. [Configuration Via Environmental Variables](#step-2-configuration-via-environmental-variables)
-3. [Deploy the App](#step-3-deploy-the-app)
-4. [Add Environmental Variables to Slack Cloud](#step-4-add-environmental-variables-to-slack-cloud)
-5. [Add Emojis](#step-5-add-emojis)
-6. [Create the Triggers](#step-6-Create-the-triggers)
-7. [Run the Workflows and Create an Incident](#step-7-run-the-workflows-and-create-an-incident)
-8. [View Incident Details in Jira](#step-8-view-incident-details-in-jira)
-9. [Create Swarming Channel](#step-9-create-swarming-channel)
-10. [Close the Incident](#step-10-close-the-incident)
-11. [Generate a Report](#step-11-generate-a-report)
+## Setup
 
-## Step 1. Clone the Repo
+Before getting started, make sure you have a development workspace where you
+have permissions to install apps. If you don’t have one set up, go ahead and
+[create one](https://slack.com/create). Also, please note that the workspace
+requires any of [the Slack paid plans](https://slack.com/pricing).
 
-```git clone https://github.com/Slack-Partner-Engineering/Incident-Management-Functions.git```
+### Install the Slack CLI
 
-## Step 2. Configuration Via Environmental Variables
+To use this sample, you first need to install and configure the Slack CLI.
+Step-by-step instructions can be found in our
+[Quickstart Guide](https://api.slack.com/future/quickstart).
 
-Next, you will have to configure your app by setting enviornmental variables. This will enable you to send incident data to your exteral accounts, such as 
-Zendesk, Jira, and others.
+### Clone the Sample App
 
-Go ahead and open the `.sample.env` file. 
-There you will find  the necessary environmental variables. A completed `.env` file should look like the following:
+Start by cloning this repository:
 
-```
-INCIDENT_CHANNEL=C0422*****
-ZOOM_JWT_TOKEN=
-ATLASSIAN_USERNAME=test@gmail.com
-ATLASSIAN_API_KEY=
-ATLASSIAN_SPACE=OPERATIONS
-ATLASSIAN_PROJECT=INC
-ATLASSIAN_INSTANCE=.atlassian.net
-ACCESS_TOKEN=
-CLERK_KEY=ab*********
-CLERK_NOTIFICATION_METHOD=SMS
-CLERK_NOTIFICATION_LEVEL=Critical
-CLERK_NOTIFICATION_NUMBERS=+*********
-INCIDENT_LEADERSHIP_GROUP_NAME=incident-leadership
-CLERK_API=https://*******
-SLACK_URL=https://de*****.slack.com/archives/
+```zsh
+# Clone this project onto your machine
+$ slack create my-app -t slack-samples/deno-incident-management
+
+# Change into this project directory
+$ cd my-app
 ```
 
-> If you want to run this in local mode, you will need to copy the `sample.env` file, rename it to `.env`, add your env variables, and then run `source .env` to set your variables. Next, run `slack run` to run the app in local mode.
+### Atlassian & Zoom Access Tokens
 
-### Notes on Getting API Keys
+Access tokens are required when calling the Atlassian and Zoom APIs.
 
-* `INCIDENT_CHANNEL` is where you will be interacting with the app. It is where the app will post updates about your incident. It needs to be a public Slack channel.
+Tokens can be created in
+[your developer settings on GitHub](https://github.com/settings/tokens).
 
-* `ZOOM_JWT_TOKEN` will need to be collected from the Zoom Developer Site. Login (or create an account if you do not have one). Go to the [zoom 
-marketplace](https://marketplace.zoom.us/develop/create) to create a JWT token. <b>If you logged in with your company account and do not have the correct 
-permissions to create a JWT token, create a basic Zoom account with your personal email.</b>
+`ZOOM_JWT_TOKEN` can be attained from the
+[Zoom Developer Site](https://developers.zoom.us/).
 
-![ZoomToken](https://user-images.githubusercontent.com/10428517/195176403-1a2ee3c7-f423-4fb3-b177-a4bc2b49cb72.png)
+> Your personal access token allows your application to perform the API calls
+> used by functions as though it was _from your Atlassian and Zoom accounts_.
+> That means all calls made from the Create Incident workflow will be made using
+> the accounts associated with the personal access tokens in use!
 
-* `ATLASSIAN_USERNAME` is the email from your Jira Cloud developer account. This is needed to create Jira Issues. First, you will need to create a free Atlassian 
-account. Next, sign up for the free [Cloud Developer Bundle](https://www.atlassian.com/try/cloud/signup?product=confluence.ondemand,jira-software.ondemand,jira-servicedesk.ondemand,jira-core.ondemand&developer=true) with Atlassian. 
+#### Add access tokens to environment variables
 
-* `ATLASSIAN_API_KEY` can be managed from here: https://id.atlassian.com/manage-profile/security/api-tokens. Make sure to create one, and then save it in a safe place.
+Storing your access token as an environment variable allows you to use different
+tokens across local and deployed versions of the same app.
 
-* `ATLASSIAN_PROJECT` This env variable is the project `Key` that you want to add issues to. It's usually a three letter upper case name, as shown in the screenshot below (My `JIRA_PROJECT` keys happen to be `INC` and `TEST`). To create a Jira Project, follow [these steps](https://support.atlassian.com/jira-software-cloud/docs/create-a-new-project/). After you've created a project, you can quickly find your projects, with their respective keys, here, under the `Key` field: 
-`https://add-your-domain-here.atlassian.net/jira/projects`. Note that you will have to replace the `add-your-domain-here` portion of the URL with your own domain.
-My URL happens to be: https://horeaporutiu.atlassian.net/jira/projects. 
+##### Environment variables used
 
-![JiraKey](https://user-images.githubusercontent.com/10428517/195177542-1fd06cf0-2170-4a26-a96b-eeb08b59c1a6.png)
+- `INCIDENT_CHANNEL` is the channel ID of the designated, public incident
+  channel. This is where the app will post updates about a given incident.
 
-## Step 3. Deploy the App
+- `ZOOM_JWT_TOKEN` is used to make calls to the Zoom API.
 
-In order to be able to add env variables to a deployed app, you will need to deploy it first!
-Run `slack deploy` to do so. If all went well, you will see the following message:
+- `ATLASSIAN_INSTANCE` is your Atlassian instance name.
 
-```
-hporutiu@hporuti-ltmkkef Incident-Management-Functions % slack deploy
-? Choose a workspace devrelsandbox  Team ID: T038J6**** 
-   App ID: A045X****  Status: Installed
+- `ATLASSIAN_USERNAME` is the email from your Jira Cloud Developer account. This
+  is used to create and update Jira issues.
 
+- `ATLASSIAN_API_KEY` is used to make calls to the Atlassian API.
 
-📚 App Manifest
-   Updated app manifest for "Incident Response" in "DevRel Sandbox" workspace
+- `ATLASSIAN_SPACE` is the Jira project `Key` used to add and edit issues.
 
-🏠 Workspace Install
-   Installed "Incident Response" app to "DevRel Sandbox" workspace
-   Updated app icon: assets/icon.png
-   Finished in 4.2s
+- `JIRA_PROJECT` is the Jira project `Key` used to add and edit issues.
 
-🎁 App packaged and ready to deploy
-   0.019MB was packaged in 1.9s
+_Note: to gain access to many of the above environment variables, we recommend
+signing up for a free
+[Cloud Developer Bundle](https://www.atlassian.com/try/cloud/signup?product=confluence.ondemand,jira-software.ondemand,jira-servicedesk.ondemand,jira-core.ondemand&developer=true)
+with Atlassian._
 
-🚀 Incident Response deployed in 6.1s
-   Dashboard:  https://slack.com/apps/A045X8*****
-   App Owner:  hporutiu (U039******)
-   Workspace:  DevRel Sandbox (T038J6****)
-```
+##### Development environment variables
 
-## Step 4. Add Environmental Variables to Slack Cloud
-
-To add the `INCIDENT_CHANNEL` variable to our deployed app, we would run `slack env add INCIDENT_CHANNEL C03V2ED7111` and then hit enter.
-You should see the following output:
-
-```
-hporutiu@hporuti-ltmkkef Incident-Management-Functions % slack env add INCIDENT_CHANNEL C03V2ED7111
-? Choose a workspace devrelsandbox  Team ID: T038J6***** 
-   App ID: A045X8*****   Status: Installed
-
- APP  A045X8****
-✨  successfully added INCIDENT_CHANNEL to app environment variables
-```
-
-> Use the `env-helper.ts` script to automate this process. This script will help deploy all of your 
-env variables to production without you having to do this manually. To run the script use 
-
-`deno run utils/scripts/env-helpers.ts` and type in `Y` when prompted in terminal to add the env variables.
-
-Make sure to repeat that process for the rest of the variables.
-
-🎉 Awesome! You are one step away from running your app! 🎉
-
-## Step 5. Add Emojis
-
-Upload the emojis from [assets](./assets/): 
-
-1. :atlassian:
-2. :boxcorp:
-3. :clerk:
-4. :zoom:
-5. :confluence:
-
-To do this, first go to the workspace where you plan to run this app. Next, go to the 
-composer where you would write a Slack message, and click on the `Emoji` button. Next,
-click on `Add Emoji`, and upload the emojis listed above.
-
-## Step 6. Create the Triggers
-
-https://user-images.githubusercontent.com/10428517/195186528-43d81752-145c-4fd9-8a7f-cbc77cd36778.mp4
-
-After creating your app, you'll need to create a new trigger that will start the
-workflow.
+When [developing locally](https://api.slack.com/future/run), environment
+variables found in the `.env` file at the root of your project are used. For
+local development, rename `.env.sample` to `.env` and add your access token to
+the file contents (replacing `ACCESS_TOKEN` with your token):
 
 ```bash
-slack trigger create --trigger-def triggers/create-incident-button.json
+# .env
+ZOOM_JWT_TOKEN=ACCESS_TOKEN
 ```
 
-The CLI will ask you to choose a workspace to install your trigger to. Also, it will ask you 
-if you want to install it for your dev app, or your prod app. Choose wisely, as the dev version of 
-the trigger will only work with `slack run`, and the prod version with `slack deploy`. Let's choose 
-the production version for now! Once you've picked a
-workspace, you should see output like this:
+##### Production environment variables
 
-```
-   App ID: A045MHR6SCT   Status: Installed
-   Workspace: devrelsandbox      Team ID: T038J6TH5PF
+[Deployed apps](https://api.slack.com/future/deploy) use environment variables
+that are added using `slack env`. To add your access token to a Workspace where
+your deployed app is installed, use the following command (once again, replacing
+`ACCESS_TOKEN` with your token):
 
-
-⚡ Trigger created
-   Trigger ID:   Ft045S9B0VHR
-   Trigger Type: shortcut
-   Trigger Name: Create an Incident
-   URL: https://slack.com/shortcuts/Ft045W7LGYKG/6374de8cdf66f250deb6335c58b4d04d
+```zsh
+$ slack env add ZOOM_JWT_TOKEN ACCESS_TOKEN
 ```
 
-> Note, there are a two other triggers that we will want to generate to get the full funcionality of this app. To do so, run the 
-following commands:
+### Configure Outgoing Domains
 
-```bash
-slack trigger create --trigger-def triggers/create-new-report-button.json
-```
-This trigger will be the same as the one above, except that it will just automatically generate a report, as shown in 
+Hosted custom functions must declare which
+[outgoing domains](https://api.slack.com/future/manifest) are used when making
+network requests, including Atlassian and Zoom calls. `api.zoom.com` is already
+configured as an outgoing domain in this sample's manifest, but you'll also need
+to provide your Atlassian subdomain (`your-subdomain.atlassian.net`).
 
-🎉 Great job! Now, let's use that trigger to kick off a workflow! 🎉
+## Create a Link Trigger
 
-## Step 7. Run the Workflows and Create an Incident
+[Triggers](https://api.slack.com/future/triggers) are what cause workflows to
+run. These triggers can be invoked by a user, or automatically as a response to
+an event within Slack.
 
-https://user-images.githubusercontent.com/10428517/195210585-88d78009-e1a7-44a3-8400-cb2c052f42da.mp4
+A [link trigger](https://api.slack.com/future/triggers/link) is a type of
+trigger that generates a **Shortcut URL** which, when posted in a channel or
+added as a bookmark, becomes a link. When clicked, the link trigger will run the
+associated workflow.
 
-Now, take the URL, and paste it into a channel. It should unfurl with a green button that 
-says `Start`, as shown below. That button will kick off your workflow!
+Link triggers are _unique to each installed version of your app_. This means
+that Shortcut URLs will be different across each workspace, as well as between
+[locally run](#running-your-project-locally) and
+[deployed apps](#deploying-your-app). When creating a trigger, you must select
+the Workspace that you'd like to create the trigger in. Each Workspace has a
+development version (denoted by `(dev)`), as well as a deployed version.
 
-Now, click on the `Start` button. Fill out the form, and then hit `Submit` when you are done. You should see an incident created in your 
-incident channel, as shown below.
+To create a link trigger for the workflow that enables end-users to configure
+the channels with active event triggers, run the following command:
 
-🙌🏼 Great job! You've now created a incident via a link trigger! 🙌🏼
-
-### Create an Incident via Webhook
-
-https://user-images.githubusercontent.com/10428517/195428586-7ac3db97-3302-4814-bffa-bb97920f69fe.mp4
-
-Now that we have learned how to create an incident manually, via a button click, let's learn how to create one via a webhook. First, we'll need 
-to create a webhook trigger, by running the following command:
-
-```
-slack trigger create --trigger-def triggers/create-incident-webhook.json
-```
-
-Again, make sure to choose the production (non-dev) version. You should see an output like the following:
-
-```
-? Choose an app Incident Response
-   App ID: A045X89BRCK   Status: Installed
-   Workspace: devrelsandbox      Team ID: T038J6TH5PF
-
-
-⚡ Trigger created
-   Trigger ID:   Ft046MEBS6N5
-   Trigger Type: webhook
-   Trigger Name: Create Incident From External Source via Webhook
-   Webhook URL:  https://hooks.slack.com/triggers/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
+```zsh
+$ slack trigger create --trigger-def triggers/create_incident.ts
 ```
 
-My Webhook URL is `https://hooks.slack.com/triggers/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` but yours will be slightly different.
-Now, to test out that the trigger is working successfully, send the following cURL request (<b>make sure to use your own webhook URL!</b>).
+After selecting a Workspace, the output provided will include the link trigger
+Shortcut URL. Copy and paste this URL into a channel as a message, or add it as
+a bookmark in a channel of the Workspace you selected.
 
+**Note: this link won't run the workflow until the app is either running locally
+or deployed!** Read on to learn how to run your app locally and eventually
+deploy it to Slack hosting.
 
-```bash
- curl --location --request POST 'https://hooks.slack.com/triggers/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' \                    
---header 'Content-Type: application/json' \
---data-raw '{
-"short_description": "Many reports that site is down! Multiple pages are returning 404 errors!",   
-"severity": "High",              
-"external_incident_id": "XX-2345"
-}'
+## Running Your Project Locally
+
+While building your app, you can see your changes propagated to your workspace
+in real-time with `slack run`. In both the CLI and in Slack, you'll know an app
+is the development version if the name has the string `(dev)` appended.
+
+```zsh
+# Run app locally
+$ slack run
+
+Connected, awaiting events
 ```
 
-Now, you should see a new incident created in your incident channel, as shown in the video above.
+Once running, click the
+[previously created Shortcut URL](#create-a-link-trigger) associated with the
+`(dev)` version of your app to configure the channel list for reaction events.
 
-🙌🏼 Great job! You now know how to create an incident via a webhook! 🙌🏼
+To stop running locally, press `<CTRL> + C` to end the process.
 
-## Step 8. View Incident Details in Jira
+## Deploying Your App
 
-https://user-images.githubusercontent.com/10428517/195429541-18b10e8c-eabf-4111-81bb-1e2a83a8d44b.mp4
+Once you're done with development, you can deploy the production version of your
+app to Slack hosting using `slack deploy`:
 
-Go ahead and click on the incident replies to see the Jira issue that was created. You will need to have set up your account credentials via
-the env variables to make sure this works as shown below.
-
-## Step 9. Create Swarming Channel
-
-https://user-images.githubusercontent.com/10428517/195429767-2e2ec683-2c86-43db-8950-51cf971cdb7c.mp4
-
-Next, click on the `Create Channel` button to create a Swarming channel. This will automatically create a Zoom call and start it so that the participants can 
-resolve the incident.
-
-## Step 10. Close the Incident
-
-https://user-images.githubusercontent.com/10428517/195429714-c608a98e-be05-4004-81d1-13314a140a15.mp4
-
-Now that we've solved the incident, it's time to close it! Click on `Close Incident` and add your close notes as shown below.
-
-Great job! You've now used the power of the Slack Platform to create, swarm, and close an incident all within Slack, while keeping all of your 
-records of data updated!
-
-## Step 11. Generate a Report
-
-https://user-images.githubusercontent.com/10428517/195429846-ef8a4caa-b663-40e6-a75b-37c3b2259445.mp4
-
-Lastly, let's generate a report. To do so, we will need to create a trigger by using the following command:
-
-```
-slack trigger create --trigger-def triggers/create-new-report-button.json
+```zsh
+$ slack deploy
 ```
 
-## Conclusion
+After deploying, [create a new link trigger](#create-a-link-trigger) for the
+production version of your app (not appended with `(dev)`). Once the trigger is
+invoked, the workflow should run just as it did in when developing locally.
 
-Thanks for following, and we hope this was useful for you. Please send feedback in this [Google Form](https://docs.google.com/forms/d/e/1FAIpQLSdwUK6ohBLc1EV3LCNwyO5QUr3_YNSyHRPBH-n46U_TsM9PfA/viewform).
+```
+$ slack trigger create --trigger-def triggers/create_incident.ts
+```
 
-## Building the App
+### Viewing Activity Logs
 
-To test new changes before pushing, you can use the `build.sh` script to format,
-lint, and test the code. Once all checks pass, feel free to add your pull
-request.
+Activity logs for the production instance of your application can be viewed with
+the `slack activity` command:
 
-<!-- ## Testing
+```zsh
+$ slack activity
+```
 
-You can write tests for your function, see `functions/reverse_test.ts` for a
-sample. Test base filenames should be suffixed with `_test`. To run tests just
-run:
+## Project Structure
 
-```bash
-slack deno test
-``` -->
+### `manifest.ts`
 
-## Troubleshooting
-- If the bookmarks are not added in a swarming channel. Make sure all the emojis are uploaded properly with the correct names. 
-- If incidents are getting posted multiple times, try deploying and running in non-local dev mode. There can be dispatch timeouts and retries in local dev mode. 
-- If you get any get or put DB errors, same as above, test with a deploy. This tends to be a timeout issue also. 
+The [app manifest](https://api.slack.com/future/manifest) contains the app's
+configuration. This file defines attributes like app name and description.
+
+### `slack.json`
+
+Used by the CLI to interact with the project's SDK dependencies. It contains
+script hooks that are executed by the CLI and implemented by the SDK.
+
+### `/functions`
+
+[Functions](https://api.slack.com/future/functions) are reusable building blocks
+of automation that accept inputs, perform calculations, and provide outputs.
+Functions can be used independently or as steps in workflows.
+
+### `/workflows`
+
+A [workflow](https://api.slack.com/future/workflows) is a set of steps that are
+executed in order. Each step in a workflow is a function.
+
+Workflows can be configured to run without user input or they can collect input
+by beginning with a [form](https://api.slack.com/future/forms) before continuing
+to the next step.
+
+### `/triggers`
+
+[Triggers](https://api.slack.com/future/triggers) determine when workflows are
+executed. A trigger file describes a scenario in which a workflow should be run,
+such as a user pressing a button or when a specific event occurs.
+
+### `/datastores`
+
+[Datastores](https://api.slack.com/future/datastores) can securely store and
+retrieve data for your application. Required scopes to use datastores include
+`datastore:write` and `datastore:read`.
+
+## Resources
+
+To learn more about developing with the CLI, you can visit the following guides:
+
+- [Creating a new app with the CLI](https://api.slack.com/future/create)
+- [Configuring your app](https://api.slack.com/future/manifest)
+- [Developing locally](https://api.slack.com/future/run)
+
+To view all documentation and guides available, visit the
+[Overview page](https://api.slack.com/future/overview).

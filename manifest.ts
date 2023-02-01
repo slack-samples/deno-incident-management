@@ -14,7 +14,7 @@ export default Manifest({
     createReportWorkflow,
   ],
   outgoingDomains: [
-    "misscoded.atlassian.net",
+    "your-subdomain.atlassian.net",
     "api.zoom.us",
   ],
   datastores: [incidentDatastore, auditIncidentDatastore],
