@@ -1,4 +1,5 @@
 export const generateChannelName = (
+  // deno-lint-ignore no-explicit-any
   channelName: any,
 ) => {
   let channelStr = channelName.toString();
@@ -9,18 +10,23 @@ export const generateChannelName = (
 
   for (let i = 0; i < channelStr.length; i++) {
     if (channelStr[i] === " ") {
+      // deno-lint-ignore no-explicit-any
       (channelStr[i] as any) = "-";
     }
     if (channelStr[i] === ".") {
+      // deno-lint-ignore no-explicit-any
       (channelStr[i] as any) = "";
     }
     if (channelStr[i] === "!") {
+      // deno-lint-ignore no-explicit-any
       (channelStr[i] as any) = "";
     }
     if (channelStr[i] === "?") {
+      // deno-lint-ignore no-explicit-any
       (channelStr[i] as any) = "";
     }
     if (channelStr[i] === "'") {
+      // deno-lint-ignore no-explicit-any
       (channelStr[i] as any) = "";
     }
   }

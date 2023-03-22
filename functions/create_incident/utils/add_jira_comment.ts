@@ -1,6 +1,7 @@
 import { getBasicAuthAtlassian } from "./get_atlassian_auth.ts";
 
 export async function addJiraComment(
+  // deno-lint-ignore no-explicit-any
   env: any,
   jiraIssueKey: string,
   closeNotes: string,
@@ -11,10 +12,12 @@ export async function addJiraComment(
 
   const url = "https://" + instance + issueURL + jiraIssueKey + "/comment";
 
+  // deno-lint-ignore no-explicit-any
   const requestBody: any = {
     "body": closeNotes,
   };
 
+  // deno-lint-ignore no-explicit-any
   const addCommentResp: any = await fetch(
     url,
     {

@@ -1,6 +1,7 @@
 import { getBasicAuthAtlassian } from "./get_atlassian_auth.ts";
 
 // https://docs.atlassian.com/software/jira/docs/api/REST/7.6.1/?_ga=2.226925854.2030217466.1525875113-593458345.1525875113#api/2/issue-editIssue
+// deno-lint-ignore no-explicit-any
 export async function updateJiraPriorityToLow(env: any, issueKey: string) {
   const instance = env["ATLASSIAN_INSTANCE"];
   const basicAuth = getBasicAuthAtlassian(env);
@@ -21,6 +22,7 @@ export async function updateJiraPriorityToLow(env: any, issueKey: string) {
   //     "id": "5"
   // Automatically set any priority to "Low" once we call close incident
 
+  // deno-lint-ignore no-explicit-any
   const requestBody: any = JSON.stringify({
     "update": { "priority": [{ "set": { "id": "4" } }] },
   });

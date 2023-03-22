@@ -69,6 +69,7 @@ export default SlackFunction(
 );
 
 // TODO :: Pull this out into a dedicated block_views/ file (inherited)
+// deno-lint-ignore no-explicit-any
 function newIncidentReport(incidentReport: any) {
   let reportText = "";
 
@@ -113,6 +114,7 @@ function newIncidentReport(incidentReport: any) {
       `Percentage of Incidents by Severity: \n${incidentSeveritiesPercentage}`,
     );
 
+  // deno-lint-ignore no-explicit-any
   const blocks: any = [
     {
       type: "section",

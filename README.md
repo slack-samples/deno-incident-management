@@ -1,8 +1,7 @@
 # Incident Management App
 
-This sample uses workflows to automate and simplify the process of
-incident management within Slack, featuring the use of external tools like Jira
-and Zoom.
+This sample uses workflows to automate and simplify the process of incident
+management within Slack, featuring the use of external tools like Jira and Zoom.
 
 **Guide Outline**:
 

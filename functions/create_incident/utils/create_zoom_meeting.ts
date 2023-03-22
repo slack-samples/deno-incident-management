@@ -1,4 +1,5 @@
 // https://marketplace.zoom.us/docs/api-reference/zoom-api/methods/#operation/meetingCreate
+// deno-lint-ignore no-explicit-any
 export async function createZoomMeeting(env: any) {
   const bt = "Bearer " + env["ZOOM_JWT_TOKEN"];
   const zoomResponse = await fetch(
