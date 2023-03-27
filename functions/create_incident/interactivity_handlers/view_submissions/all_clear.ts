@@ -15,7 +15,7 @@ export const allClearSubmission: ViewSubmissionHandler<
   { view, body, client, env },
 ) => {
   const { private_metadata = "" } = view;
-  const allClearTS = (Date.now() / 1000);
+  const allClearTS = Date.now() / 1000;
 
   const incidentID = JSON.parse(private_metadata).incident_id;
   const incident = await getIncident(client, incidentID);

@@ -1,6 +1,7 @@
 import Incident from "../../../types/incident.ts";
 import { getBasicAuthAtlassian } from "./get_atlassian_auth.ts";
 
+// deno-lint-ignore no-explicit-any
 export async function createConfluenceDoc(env: any, incident: Incident) {
   const instance = env["ATLASSIAN_INSTANCE"];
   const basicAuth = getBasicAuthAtlassian(env);
@@ -22,6 +23,7 @@ export async function createConfluenceDoc(env: any, incident: Incident) {
 
   // TODO :: Existing implementation does not allow for subsequent updating of
   // Confluence document if issue is re-opened and re-closed
+  // deno-lint-ignore no-explicit-any
   const createPageResp: any = await fetch(
     url,
     {
@@ -43,6 +45,7 @@ export async function createConfluenceDoc(env: any, incident: Incident) {
   return docURL;
 }
 
+// deno-lint-ignore no-explicit-any
 function getConfluenceCreateHTML(incident: Incident, env: any) {
   const instance = env["ATLASSIAN_INSTANCE"];
 

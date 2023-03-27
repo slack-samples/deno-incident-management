@@ -2,6 +2,7 @@ import Incident from "../../../types/incident.ts";
 import { getBasicAuthAtlassian } from "./get_atlassian_auth.ts";
 
 export async function updateJiraIssue(
+  // deno-lint-ignore no-explicit-any
   env: any,
   incident: Incident,
   newSummary: string,
@@ -16,6 +17,7 @@ export async function updateJiraIssue(
   const incidentID = incident.incident_id;
 
   //build the requestBody with our inputs from the UI
+  // deno-lint-ignore no-explicit-any
   const requestBody: any = {
     "fields": {},
   };
@@ -29,6 +31,7 @@ export async function updateJiraIssue(
     requestBody.fields.summary = incidentID + ": " + newSummary;
   }
 
+  // deno-lint-ignore no-explicit-any
   const updateTicketResp: any = await fetch(
     url,
     {

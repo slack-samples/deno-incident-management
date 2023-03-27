@@ -56,6 +56,7 @@ export const getOpenIncidentBlocks = (
   const formattedStartTime = new Date(incident_start_time * 1000);
 
   // Open incident message + associated button actions
+  // deno-lint-ignore no-explicit-any
   const blocks: any = [
     {
       type: "section",
