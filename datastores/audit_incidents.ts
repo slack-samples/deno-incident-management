@@ -1,6 +1,6 @@
 import { DefineDatastore, Schema } from "deno-slack-sdk/mod.ts";
 import Incident from "../types/incident.ts";
-import { SlackAPIClient } from "https://deno.land/x/deno_slack_api@1.5.0/types.ts";
+import { SlackAPIClient } from "deno-slack-api/types.ts";
 
 /**
  * Used to capture changes to the incidents
