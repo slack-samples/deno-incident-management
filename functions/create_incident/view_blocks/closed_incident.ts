@@ -25,8 +25,7 @@ export const getClosedIncidentBlocks = (incident: Incident) => {
   // Identify assigned DRI
   const incidentDRI = incident_dri ? `<@${incident_dri}>` : "Not assigned";
 
-  // deno-lint-ignore no-explicit-any
-  const startTime = new Date(<any> incident_start_time * 1000);
+  const startTime = new Date(incident_start_time * 1000);
   // deno-lint-ignore no-explicit-any
   const endTime = new Date(<any> incident_closed_ts * 1000);
 

@@ -1,9 +1,9 @@
 import Incident from "../../../types/incident.ts";
+import { Env } from "deno-slack-sdk/types.ts";
 import { getBasicAuthAtlassian } from "./get_atlassian_auth.ts";
 
 export async function updateJiraIssue(
-  // deno-lint-ignore no-explicit-any
-  env: any,
+  env: Env,
   incident: Incident,
   newSummary: string,
   newLongDesc: string,

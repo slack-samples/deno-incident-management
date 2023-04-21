@@ -1,8 +1,8 @@
 import Incident from "../../../types/incident.ts";
+import { Env } from "deno-slack-sdk/types.ts";
 import { getBasicAuthAtlassian } from "./get_atlassian_auth.ts";
 
-// deno-lint-ignore no-explicit-any
-export async function createJiraIssue(env: any, incident: Incident) {
+export async function createJiraIssue(env: Env, incident: Incident) {
   const projectKey = env["JIRA_PROJECT"];
   const instance = env["ATLASSIAN_INSTANCE"];
   const basicAuth = getBasicAuthAtlassian(env);
@@ -12,8 +12,7 @@ export async function createJiraIssue(env: any, incident: Incident) {
   const incidentID = incident.incident_id;
 
   //build the requestBody with our inputs from the UI
-  // deno-lint-ignore no-explicit-any
-  const requestBody: any = {
+  const requestBody = {
     "fields": {
       "project": {
         "key": projectKey,
@@ -26,13 +25,12 @@ export async function createJiraIssue(env: any, incident: Incident) {
     },
   };
 
-  //only add optional fields to request body if they were filled in in the UI
+  // Only add optional fields to request body if they were filled in in the UI
   if (incident.long_description !== "") {
-    requestBody.fields.description = incident.long_description;
+    requestBody.fields.description = incident.long_description || "";
   }
 
-  // deno-lint-ignore no-explicit-any
-  const createTicketResp: any = await fetch(
+  const createTicketResp = await fetch(
     url,
     {
       method: "POST",

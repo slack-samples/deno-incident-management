@@ -4,6 +4,11 @@ import incidentDatastore from "./datastores/incidents.ts";
 import auditIncidentDatastore from "./datastores/audit_incidents.ts";
 import createReportWorkflow from "./workflows/create_incident_report.ts";
 
+/**
+ * The app manifest contains the app's configuration. This
+ * file defines attributes like app name and description.
+ * https://api.slack.com/future/manifest
+ */
 export default Manifest({
   name: "Incident Management",
   description:
@@ -14,7 +19,7 @@ export default Manifest({
     createReportWorkflow,
   ],
   outgoingDomains: [
-    "your-subdomain.atlassian.net",
+    "your-subdomain.atlassian.net", // Update with Atlassian domain
     "api.zoom.us",
   ],
   datastores: [incidentDatastore, auditIncidentDatastore],

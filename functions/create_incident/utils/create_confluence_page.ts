@@ -1,8 +1,8 @@
+import { Env } from "deno-slack-sdk/types.ts";
 import Incident from "../../../types/incident.ts";
 import { getBasicAuthAtlassian } from "./get_atlassian_auth.ts";
 
-// deno-lint-ignore no-explicit-any
-export async function createConfluenceDoc(env: any, incident: Incident) {
+export async function createConfluenceDoc(env: Env, incident: Incident) {
   const instance = env["ATLASSIAN_INSTANCE"];
   const basicAuth = getBasicAuthAtlassian(env);
   const url = `https://${instance}/wiki/rest/api/content`;
@@ -23,8 +23,7 @@ export async function createConfluenceDoc(env: any, incident: Incident) {
 
   // TODO :: Existing implementation does not allow for subsequent updating of
   // Confluence document if issue is re-opened and re-closed
-  // deno-lint-ignore no-explicit-any
-  const createPageResp: any = await fetch(
+  const createPageResp = await fetch(
     url,
     {
       method: "POST",
@@ -45,8 +44,7 @@ export async function createConfluenceDoc(env: any, incident: Incident) {
   return docURL;
 }
 
-// deno-lint-ignore no-explicit-any
-function getConfluenceCreateHTML(incident: Incident, env: any) {
+function getConfluenceCreateHTML(incident: Incident, env: Env) {
   const instance = env["ATLASSIAN_INSTANCE"];
 
   const jiraLink = "https://" + instance + "/browse/" +

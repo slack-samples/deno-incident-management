@@ -1,36 +1,29 @@
 export const generateChannelName = (
-  // deno-lint-ignore no-explicit-any
-  channelName: any,
+  channelName: string,
 ) => {
   let channelStr = channelName.toString();
   channelStr = channelStr.toLowerCase();
   const noSpecialChars = channelStr.replace(/[^a-zA-Z0-9-.!'? ]/g, "");
+  const channelStrArr = noSpecialChars.split("");
 
-  channelStr = noSpecialChars.split("");
-
-  for (let i = 0; i < channelStr.length; i++) {
-    if (channelStr[i] === " ") {
-      // deno-lint-ignore no-explicit-any
-      (channelStr[i] as any) = "-";
+  for (let i = 0; i < channelStrArr.length; i++) {
+    if (channelStrArr[i] === " ") {
+      (channelStrArr[i]) = "-";
     }
-    if (channelStr[i] === ".") {
-      // deno-lint-ignore no-explicit-any
-      (channelStr[i] as any) = "";
+    if (channelStrArr[i] === ".") {
+      (channelStrArr[i]) = "";
     }
-    if (channelStr[i] === "!") {
-      // deno-lint-ignore no-explicit-any
-      (channelStr[i] as any) = "";
+    if (channelStrArr[i] === "!") {
+      (channelStrArr[i]) = "";
     }
-    if (channelStr[i] === "?") {
-      // deno-lint-ignore no-explicit-any
-      (channelStr[i] as any) = "";
+    if (channelStrArr[i] === "?") {
+      (channelStrArr[i]) = "";
     }
-    if (channelStr[i] === "'") {
-      // deno-lint-ignore no-explicit-any
-      (channelStr[i] as any) = "";
+    if (channelStrArr[i] === "'") {
+      (channelStrArr[i]) = "";
     }
   }
-  channelStr = channelStr.join("");
+  channelStr = channelStrArr.join("");
   //max chars for a channel name is 80
   channelStr = channelStr.substring(0, 80);
   return channelStr;
