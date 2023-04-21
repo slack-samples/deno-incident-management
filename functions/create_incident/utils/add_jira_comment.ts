@@ -1,24 +1,21 @@
+import { Env } from "deno-slack-sdk/types.ts";
 import { getBasicAuthAtlassian } from "./get_atlassian_auth.ts";
 
 export async function addJiraComment(
-  // deno-lint-ignore no-explicit-any
-  env: any,
+  env: Env,
   jiraIssueKey: string,
   closeNotes: string,
 ) {
   const instance = env["ATLASSIAN_INSTANCE"];
   const basicAuth = getBasicAuthAtlassian(env);
   const issueURL = "/rest/api/2/issue/";
-
   const url = "https://" + instance + issueURL + jiraIssueKey + "/comment";
 
-  // deno-lint-ignore no-explicit-any
-  const requestBody: any = {
+  const requestBody = {
     "body": closeNotes,
   };
 
-  // deno-lint-ignore no-explicit-any
-  const addCommentResp: any = await fetch(
+  const addCommentResp = await fetch(
     url,
     {
       method: "POST",
@@ -29,5 +26,6 @@ export async function addJiraComment(
       body: JSON.stringify(requestBody),
     },
   );
+
   return addCommentResp;
 }

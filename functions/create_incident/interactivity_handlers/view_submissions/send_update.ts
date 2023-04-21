@@ -18,40 +18,45 @@ export const sendUpdateSubmission: ViewSubmissionHandler<
   const update = view.state.values.send_update_block.send_update_action.value;
   const incidentJiraKey = incident.incident_jira_issue_key;
 
-  // The update should be sent to the appropriate Jira ticket via a comment
-  addJiraComment(
-    env,
-    incidentJiraKey,
-    update,
-  );
+  try {
+    // The update should be sent to the appropriate Jira ticket via a comment
+    const commentRes = await addJiraComment(
+      env,
+      incidentJiraKey,
+      update,
+    );
+    if (!commentRes.ok) throw new Error(commentRes.statusText);
 
-  // Update incident with most recent update
-  incident.last_incident_update = update;
-  incident.last_incident_update_ts = Date.now();
-  saveIncident(client, incident);
+    // Update incident with most recent update
+    incident.last_incident_update = update;
+    incident.last_incident_update_ts = Date.now();
+    saveIncident(client, incident);
 
-  const updateBlocks = [
-    {
-      type: "section",
-      text: {
-        type: "mrkdwn",
-        text: `<@${interactor.id}> submitted an update:\n\n>${update}`,
+    const updateBlocks = [
+      {
+        type: "section",
+        text: {
+          type: "mrkdwn",
+          text: `<@${interactor.id}> submitted an update:\n\n>${update}`,
+        },
       },
-    },
-  ];
+    ];
 
-  if (incident.incident_swarming_channel_id) {
-    // Post update message to swarm channel
-    client.chat.postMessage({
-      channel: incident.incident_swarming_channel_id,
-      blocks: updateBlocks,
-    });
-  } else {
-    // Post update message to main incident channel
-    client.chat.postMessage({
-      channel: incident.incident_channel,
-      thread_ts: incident.incident_channel_msg_ts,
-      blocks: updateBlocks,
-    });
+    if (incident.incident_swarming_channel_id) {
+      // Post update message to swarm channel
+      client.chat.postMessage({
+        channel: incident.incident_swarming_channel_id,
+        blocks: updateBlocks,
+      });
+    } else {
+      // Post update message to main incident channel
+      client.chat.postMessage({
+        channel: incident.incident_channel,
+        thread_ts: incident.incident_channel_msg_ts,
+        blocks: updateBlocks,
+      });
+    }
+  } catch (err) {
+    console.error(err);
   }
 };

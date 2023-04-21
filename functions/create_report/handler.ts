@@ -114,8 +114,7 @@ function newIncidentReport(incidentReport: any) {
       `Percentage of Incidents by Severity: \n${incidentSeveritiesPercentage}`,
     );
 
-  // deno-lint-ignore no-explicit-any
-  const blocks: any = [
+  const blocks = [
     {
       type: "section",
       block_id: "incident_report",

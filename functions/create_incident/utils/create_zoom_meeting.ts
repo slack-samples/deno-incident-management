@@ -1,6 +1,7 @@
+import { Env } from "deno-slack-sdk/types.ts";
+
 // https://marketplace.zoom.us/docs/api-reference/zoom-api/methods/#operation/meetingCreate
-// deno-lint-ignore no-explicit-any
-export async function createZoomMeeting(env: any) {
+export async function createZoomMeeting(env: Env) {
   const bt = "Bearer " + env["ZOOM_JWT_TOKEN"];
   const zoomResponse = await fetch(
     "https://api.zoom.us/v2/users/me/meetings",
