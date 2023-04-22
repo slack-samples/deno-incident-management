@@ -4,10 +4,10 @@ import { postIncidentFunctionDefinition } from "../functions/create_incident/def
 /**
  * A workflow is a set of steps that are executed in order.
  * Each step in a workflow is a function.
- * https://api.slack.com/future/workflows
+ * https://api.slack.com/automation/workflows
  *
  * This workflow uses interactivity. Learn more at:
- * https://api.slack.com/future/forms#add-interactivity
+ * https://api.slack.com/automation/forms#add-interactivity
  */
 const createIncidentWorkflow = DefineWorkflow({
   callback_id: "create_incident_workflow",
