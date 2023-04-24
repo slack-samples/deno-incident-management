@@ -4,7 +4,7 @@ import { postReportFunctionDefinition } from "../functions/create_report/definit
 /**
  * A workflow is a set of steps that are executed in order
  * Each step in a Workflow is a function.
- * https://api.slack.com/future/workflows
+ * https://api.slack.com/automation/workflows
  */
 const createReportWorkflow = DefineWorkflow({
   callback_id: "create_incident_report",

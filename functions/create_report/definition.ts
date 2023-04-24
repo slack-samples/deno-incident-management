@@ -5,7 +5,7 @@ import { DefineFunction, Schema } from "deno-slack-sdk/mod.ts";
  * posts an incident report to channel ephemerally.
  *
  * More on defining functions here:
- * https://api.slack.com/future/functions/custom
+ * https://api.slack.com/automation/functions/custom
  */
 export const postReportFunctionDefinition = DefineFunction({
   callback_id: "post_report",

@@ -4,7 +4,7 @@ import { DefineFunction, Schema } from "deno-slack-sdk/mod.ts";
  * takes posts a new incident to the incident channel.
  *
  * More on defining functions here:
- * https://api.slack.com/future/functions/custom
+ * https://api.slack.com/automation/functions/custom
  */
 export const postIncidentFunctionDefinition = DefineFunction({
   callback_id: "create_incident",

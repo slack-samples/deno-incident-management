@@ -4,7 +4,7 @@ import createIncidentWorkflow from "../workflows/create_incident.ts";
 /**
  * This is a definition file for a shortcut link trigger
  * For more on triggers and other trigger types:
- * https://api.slack.com/future/triggers
+ * https://api.slack.com/automation/triggers
  */
 const trigger: Trigger<
   typeof createIncidentWorkflow.definition
