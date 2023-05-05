@@ -1,4 +1,5 @@
 import { Trigger } from "deno-slack-sdk/types.ts";
+import { TriggerContextData, TriggerTypes } from "deno-slack-api/mod.ts";
 import createIncidentWorkflow from "../workflows/create_incident.ts";
 
 /**
@@ -9,23 +10,23 @@ import createIncidentWorkflow from "../workflows/create_incident.ts";
 const trigger: Trigger<
   typeof createIncidentWorkflow.definition
 > = {
-  type: "shortcut",
+  type: TriggerTypes.Shortcut,
   name: "Create an incident",
   description:
     "Create and send an announcement to one or more channels in your workspace.",
   workflow: "#/workflows/create_incident_workflow",
   inputs: {
     currentUser: {
-      value: "{{data.user_id}}",
+      value: TriggerContextData.Shortcut.user_id,
     },
     currentChannel: {
-      value: "{{data.channel_id}}",
+      value: TriggerContextData.Shortcut.channel_id,
     },
     currentTime: {
       value: "{{event_timestamp}}",
     },
     interactivity_context: {
-      value: "{{data.interactivity}}",
+      value: TriggerContextData.Shortcut.interactivity,
     },
   },
 };
