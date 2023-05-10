@@ -14,5 +14,6 @@
   "lock": false,
   "tasks": {
     "test": "deno fmt --check && deno lint && deno test --allow-read --allow-none"
-  }
+  },
+  "lock": false
 }
