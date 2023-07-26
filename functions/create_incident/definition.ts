@@ -50,6 +50,7 @@ export const postIncidentFunctionDefinition = DefineFunction({
       "short_description",
       "severity",
       "incident_trigger",
+      "incident_channel",
     ],
   },
   output_parameters: {
