@@ -54,8 +54,8 @@ $ cd my-app
 
 ### Atlassian and Zoom Access Tokens
 
-To run this application, access tokens are required in order to make calls to
-the Atlassian and Zoom APIs.
+To run this application, **access tokens are required in order to make calls to
+the Atlassian and Zoom APIs**.
 
 `ZOOM_JWT_TOKEN` can be attained from the
 [Zoom Developer Site](https://developers.zoom.us/) and many of the Atlassian

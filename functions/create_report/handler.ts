@@ -7,7 +7,9 @@ export default SlackFunction(
   async (
     { inputs, env, client },
   ) => {
-    const incidentChannel = env["INCIDENT_CHANNEL"];
+    const incidentChannel = env["INCIDENT_CHANNEL"]
+      ? env["INCIDENT_CHANNEL"]
+      : inputs.currentChannel;
     const report = await getIncidents(client);
 
     // TODO :: Refactor / clean up (inherited)
@@ -96,7 +98,7 @@ function newIncidentReport(incidentReport: any) {
     }
   }
 
-  reportText = reportText.concat(`:icon: *Incident Report* :icon: \n`)
+  reportText = reportText.concat(`:warning: *Incident Report* :warning: \n`)
     .concat(`Total Incidents: ${incidentReport.numberOfIncidents} \n`)
     .concat(`Swarming Incidents: ${incidentReport.numberOfSwarmingIncidents}\n`)
     .concat(`Open Incidents: ${incidentReport.numberOfOpenIncidents} \n`)

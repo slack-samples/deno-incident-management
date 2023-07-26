@@ -35,7 +35,9 @@ export default SlackFunction(
   async (
     { inputs, client, env },
   ) => {
-    const incidentChannel = env["INCIDENT_CHANNEL"];
+    const incidentChannel = env["INCIDENT_CHANNEL"]
+      ? env["INCIDENT_CHANNEL"]
+      : inputs.incident_channel;
 
     // TODO :: convert into CustomType
     const incident: Incident = {
