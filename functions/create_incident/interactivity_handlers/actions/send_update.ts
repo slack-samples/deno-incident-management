@@ -2,14 +2,15 @@ import {
   BlockActionHandler,
 } from "deno-slack-sdk/functions/interactivity/types.ts";
 import { postIncidentFunctionDefinition } from "../../definition.ts";
+import { buildError } from "../../../utils.ts";
 
 export const sendUpdate: BlockActionHandler<
   typeof postIncidentFunctionDefinition.definition
-> = ({ body, client, action }) => {
+> = async ({ body, client, action }) => {
   const incident = action.value;
 
   // Open send update modal
-  client.views.open({
+  const formResp = await client.views.open({
     trigger_id: body.interactivity.interactivity_pointer,
     view: {
       type: "modal",
@@ -48,4 +49,5 @@ export const sendUpdate: BlockActionHandler<
       ],
     },
   });
+  if (!formResp.ok) return buildError("client.views.open", formResp);
 };

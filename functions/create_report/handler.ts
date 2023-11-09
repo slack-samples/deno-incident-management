@@ -1,6 +1,7 @@
 import { SlackFunction } from "deno-slack-sdk/mod.ts";
 import { postReportFunctionDefinition } from "./definition.ts";
 import { getIncidents } from "../../datastores/incidents.ts";
+import { buildError } from "../utils.ts";
 
 export default SlackFunction(
   postReportFunctionDefinition,
@@ -58,11 +59,14 @@ export default SlackFunction(
 
     const blocks = newIncidentReport(report);
 
-    client.chat.postEphemeral({
+    const ephemeralResp = await client.chat.postEphemeral({
       channel: incidentChannel,
       blocks,
       user: inputs.currentUser,
     });
+    if (!ephemeralResp.ok) {
+      return buildError("client.chat.postEphemeral", ephemeralResp);
+    }
 
     return {
       outputs: false,

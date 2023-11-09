@@ -98,11 +98,18 @@ export default SlackFunction(
         },
       ];
 
-      client.chat.postMessage({
+      const postMsgResp = await client.chat.postMessage({
         channel: incidentChannel,
         blocks: jiraIssueBlocks,
         thread_ts: ts,
       });
+
+      if (!postMsgResp.ok) {
+        return {
+          error:
+            `Error while executing client.chat.postMessage, Error detail ${postMsgResp.error}`,
+        };
+      }
     } catch (err) {
       return {
         error:
