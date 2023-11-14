@@ -1,3 +1,6 @@
+## ⚠️ This sample is undergoing maintenance and does not currently work as expected.
+
+
 # Incident Management
 
 This sample automation uses workflows to simplify the process of incident
